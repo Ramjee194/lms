@@ -1,26 +1,21 @@
-// ./configs/mongodb.js
 import mongoose from "mongoose";
+
+
 
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            tls: true,  // <-- ensure TLS is enabled
+            tls: true,
             tlsAllowInvalidCertificates: false,
         });
-
-        mongoose.connection.on('connected', () => {
-            console.log('✅ Database connected');
-        });
-
-        mongoose.connection.on('error', (err) => {
-            console.error('❌ MongoDB connection error:', err);
-        });
+        console.log("✅ Database connected");
     } catch (err) {
-        console.error('❌ Initial connection error:', err);
-        process.exit(1);
+        console.error("❌ Initial connection error:", err.message || err);
     }
+
+    mongoose.connection.on("error", (err) => {
+        console.error("❌ Runtime MongoDB connection error:", err.message || err);
+    });
 };
 
 export default connectDB;
