@@ -1,18 +1,10 @@
-import { Webhook } from "svix";
-import User from "../models/User.js";
-
-// Helper to format user data
-const formatUserData = (data) => ({
-    _id: data.id,
-    email: data.email_address[0].email_address,
-    name: `${data.first_name} ${data.last_name}`,
-    imageUrl: data.image_url,
-});
-
 export const clerlWebhooks = async (req, res) => {
     try {
+        console.log('Received Webhook headers:', req.headers);  // Log headers to check
+
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
+        // Verify the webhook using the headers from the request
         await whook.verify(JSON.stringify(req.body), {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
