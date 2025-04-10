@@ -1,29 +1,29 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv/config'
-import connectDB from './configs/mongodb.js'
-import { clerlWebhooks } from './controllers/webhooks.js'
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './configs/mongodb.js';
+import { clerlWebhooks } from './controllers/webhooks.js';
 
-//initialize express
-const app=express()
+dotenv.config(); // Load environment variables
 
-//connect to database
-await connectDB()
+// Initialize express
+const app = express();
 
-//MIddleware
-app.use(cors())
+// Connect to database
+await connectDB();
 
-//routes
-app.get('/',(req,res)=>{
-   
-    res.send("app is working ")
-})
-app.post('/clerk',express.json(),clerlWebhooks)
+// Middleware
+app.use(cors());
 
+// Routes
+app.get('/', (req, res) => {
+    res.send("App is working");
+});
+app.post('/clerk', express.json(), clerlWebhooks);
 
-//port
-const PORT=process.env.PORT || 3000;
+// Port
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT,()=>{
-    console.log(`app is runnig on port ${PORT}`)
-})
+app.listen(PORT, () => {
+    console.log(`App is running on port ${PORT}`);
+});
