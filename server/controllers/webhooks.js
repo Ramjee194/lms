@@ -19,6 +19,7 @@ export const clerlWebhooks = async (req, res) => {
             "svix-signature": req.headers["svix-signature"],
         });
 
+
         const { data, type } = req.body;
 
         if (!data || !data.id) {
