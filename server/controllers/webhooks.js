@@ -9,7 +9,7 @@ const formatUserData = (data) => ({
     imageUrl: data.image_url,
 });
 
-export const clerlWebhooks = async (req, res) => {
+export const clerkWebhooks = async (req, res) => {
     try {
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
