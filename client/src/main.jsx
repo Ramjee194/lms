@@ -5,6 +5,7 @@ import { AppContextProvider } from './context/AppContext.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 
+
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -15,9 +16,13 @@ if (!PUBLISHABLE_KEY) {
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     {/* Pass publishableKey and afterSignOutUrl to ClerkProvider */}
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider frontendApi={clerkFrontendApi} publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    
       <AppContextProvider>
         <App />
+        <SignedIn>
+          <SyncUser />
+        </SignedIn>
       </AppContextProvider>
     </ClerkProvider>
   </BrowserRouter>
