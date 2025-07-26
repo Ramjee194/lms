@@ -13,40 +13,42 @@ dotenv.config();
 
 const app = express();
 
+// 👉 Clerk webhook: raw parser only for /clerk
+app.post(
+  '/clerk',
+  express.raw({ type: 'application/json' }),
+  clerkWebhookHandler
+);
 
-// Middleware
+// 👉 Stripe webhook: raw parser only for /stripe
+app.post(
+  '/stripe',
+  express.raw({ type: 'application/json' }),
+  stripeWebhooks
+);
+
+// ⚠️ All other middleware should come **after** raw body routes
 app.use(cors());
-app.use(express.json()); // Parse JSON requests
+app.use(express.json()); // parse all other requests
 app.use(clerkMiddleware());
 
-// Connect to database and cloudinary
+// 🧠 DB + Cloudinary connect
 await connectDB();
 await connectCloudinary();
 
-// Default test route
+// ✅ Base route
 app.get('/', (req, res) => {
   res.send('LMS API is running...');
 });
 
+// 🧭 API Routes
+app.use('/api', userRouter);
+app.use('/api/educator', educatorRouter);
+app.use('/api/course', courseRouter);
+app.use('/api/user', userRouter);
 
-// Routes
-app.post(
-  '/clerk',
-  express.raw({ type: 'application/json' }), 
-  clerkWebhookHandler
-);
-app.use('/api',userRouter);
-app.use('/api/educator',express.json(), educatorRouter);
-app.use('/api/course',express.json(),courseRouter)
-app.use('/api/user',express.json(),userRouter)
-app.post('/stripe',express.raw({type:'application/json'}),stripeWebhooks
-)
-
-
-
-
-// Start server
+// 🚀 Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(` Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
