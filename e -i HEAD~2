@@ -1,0 +1,161 @@
+[33mcommit ad8431fe4795941fb236de43239af317649e21bd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sun Jul 27 01:13:26 2025 +0530
+
+    Remove Stripe secret key from source code
+
+[33mcommit baf6f10db9fff842ea878e607a96cba43954dffc[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sat Jul 26 03:07:30 2025 +0530
+
+    Refactored to use environment variables for Stripe secrets
+
+[33mcommit 06df900341fdd208c6fad5df4cc6be543ac94244[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sat Jul 26 02:42:35 2025 +0530
+
+    Fixed some frontend files
+
+[33mcommit 4caa399e86cf779c3aafdf293f17186cde20131f[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sat Jul 26 02:12:35 2025 +0530
+
+    laest server
+
+[33mcommit 5b318161701257650876345d9d9b0570a205fc4d[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Mon Apr 14 01:58:41 2025 +0530
+
+    upadate
+
+[33mcommit f258e1863eb839b557a1e277cbaf012f67a5e89b[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Mon Apr 14 00:27:26 2025 +0530
+
+    chenges
+
+[33mcommit fa9ac86e8605b61d92572518e90f3afa7195768c[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sun Apr 13 02:03:09 2025 +0530
+
+    changes
+
+[33mcommit 136419565ff24e006f87430915b15080d02d2acf[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sat Apr 12 23:30:27 2025 +0530
+
+    update
+
+[33mcommit f298217b6748e702678bb348b57b32556f3d7dde[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Sat Apr 12 23:30:05 2025 +0530
+
+    update headers
+
+[33mcommit cf9a1a0fe0ffe6e3155813950f2d00c5b136e008[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 03:03:06 2025 +0530
+
+    1st
+
+[33mcommit b52e162d76c34b49d89a78bf52149841f6f0b4bb[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 02:51:32 2025 +0530
+
+    clerk changes
+
+[33mcommit b49c07298d5bb2b21dc925b94777a61982e3d53b[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 02:03:48 2025 +0530
+
+    changes
+
+[33mcommit d0b739d8cb2107985363a7719b4fbe68b12c1a55[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 01:34:22 2025 +0530
+
+    added
+
+[33mcommit 8b8d3835222afb2efd7f4016cfaccba1c3af7785[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 01:24:13 2025 +0530
+
+    update file
+
+[33mcommit 1ed16c1483873ed83e61c900074381a0844b3325[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Fri Apr 11 01:01:05 2025 +0530
+
+    changes
+
+[33mcommit 1d2d064e5ada49d683fb3257f8a29b081fd41441[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 23:58:59 2025 +0530
+
+    file user env
+
+[33mcommit acb0e9bd2279ae654c0ff3f69a87add5913e530c[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 23:09:00 2025 +0530
+
+    corrected user
+
+[33mcommit e897f89521df5b4fd55d648228aa254546fc2a40[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 22:22:00 2025 +0530
+
+    changes
+
+[33mcommit 6f24a035cb39ee3d5981785da16aed5d5902f464[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 22:12:36 2025 +0530
+
+    added
+
+[33mcommit fdeae52761d6f3609c831fc8f807dc279df88a23[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 15:05:17 2025 +0530
+
+    file name changes
+
+[33mcommit 60a6c4b2a19ca2d381b5b08307b04a034d437f94[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Thu Apr 10 14:57:00 2025 +0530
+
+    file name changes
+
+[33mcommit 747b16429a3176ed859eb0d881bbbce6de417c31[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Wed Apr 9 22:28:37 2025 +0530
+
+    vercel update
+
+[33mcommit e9d57e3e8f692d64e950f442386798fd90bb5663[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Wed Apr 9 22:18:40 2025 +0530
+
+    update vercel
+
+[33mcommit 63cd7591a76dfbf09fe9fa5f38d0ad0421d06d7b[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Tue Apr 8 01:05:43 2025 +0530
+
+    changes
+
+[33mcommit 6269083c1f1bacd928403b67fbbaf00fc6bfb77c[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Tue Apr 8 00:11:21 2025 +0530
+
+    added changes
+
+[33mcommit 731b73f287e5d56ea1483b8f73751cc48758d60c[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Mon Apr 7 02:44:07 2025 +0530
+
+    vercel json added
+
+[33mcommit 02ba8e42948f23379b722392c9f9082f804f21bc[m
+Author: Ramjee194 <ramjeekumaryadav733@gmail.com>
+Date:   Mon Apr 7 02:35:31 2025 +0530
+
+    first commit
