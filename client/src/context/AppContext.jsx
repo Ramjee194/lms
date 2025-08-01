@@ -24,7 +24,7 @@ export const AppContextProvider = (props) => {
   // ✅ Fixed: Fetch All Courses with Vite proxy
   const fetchAllCourses = async () => {
     try {
-      const res = await fetch(backendUrl+'/api/course/all'); // 🟢 Use proxy URL
+      const res = await fetch(`${backendUrl}/api/course/all`); // 🟢 Use proxy URL
       const data = await res.json();
 
       console.log(" All Courses from backend:", data); // 🧪 Debug log
@@ -48,7 +48,7 @@ export const AppContextProvider = (props) => {
     }
     try {
       const token = await getToken();
-      const { data } = await axios.get(backendUrl + 'api/user/data', { headers: { Authorization: `Bearer $(token)` } })
+      const { data } = await axios.get(`${backendUrl}/api/user/data`, { headers: { Authorization: `Bearer $(token)` } })
       if (data.success) {
         setUserData(data.user)
       }
@@ -103,7 +103,7 @@ export const AppContextProvider = (props) => {
   const fetchUserEnrolledCourses = async () => {
     try {
       const token = await getToken()
-      const { data } = await axios.get(backendUrl + '/api/user/enrolled-courses', { headers: { Authorization: `Bearer $(token)` } })
+      const { data } = await axios.get(`${backendUrl}/api/user/enrolled-courses`, { headers: { Authorization: `Bearer $(token)` } })
       if (data.success) {
         setEnrolledCourses(data.enrolledCourses.reverse())
       }

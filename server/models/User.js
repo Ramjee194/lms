@@ -7,7 +7,12 @@ const userSchema = new mongoose.Schema(
             type: String, // allow string ID (Clerk's user ID)
             required: true,
         },
-        
+        clerkId: {
+  type: String,
+  required: true,
+  unique: true
+},
+
         name: {
             type: String,
             required: true,

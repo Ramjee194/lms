@@ -9,11 +9,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 const formatUserData = (data) => ({
-  _id: data.id,
+  _id: data.id,                     // This will act as MongoDB document _id
+  clerkId: data.id,                // Required for querying with clerkId
   email: data.email_addresses?.[0]?.email_address || '',
   name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
   imageUrl: data.image_url || '',
+  enrolledCourses: [],            // Ensure empty array initially
 });
+
 
 export const clerkWebhookHandler = async (req, res) => {
   const secret = process.env.CLERK_WEBHOOK_SECRET;

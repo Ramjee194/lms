@@ -42,10 +42,12 @@ app.get('/', (req, res) => {
 });
 
 // 🧭 API Routes
-app.use('/api', userRouter);
+// Server.js
+app.use('/api', userRouter); 
 app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
-app.use('/api/user', userRouter);
+app.use('/api/user', userRouter);  // ✅ Ye sahi hai
+
 
 // 🚀 Start server
 const PORT = process.env.PORT || 3000;
