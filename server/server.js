@@ -17,24 +17,38 @@ const app = express();
 // ============================
 // 1️⃣ Clerk + Stripe Webhooks
 // ============================
-// These must use raw body, so they come before express.json()
 app.post("/clerk", express.raw({ type: "application/json" }), clerkWebhookHandler);
 app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
 
 // ============================
-// 2️⃣ Global Middlewares
+// 2️⃣ Correct CORS Setup
 // ============================
 
-// ✅ Correct CORS config for localhost & Render
+const allowedOrigins = [
+  "http://localhost:5173",            // Local Dev
+  "https://lms-1-ki76.onrender.com",  // Render Frontend
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",           // for local dev
-      "https://lms-1-ki76.onrender.com", // your deployed frontend
-    ],
-    credentials: true, // ✅ required for cookies / Clerk sessions
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // ✅ Needed for cookies & Clerk
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ✅ Handle OPTIONS Preflight
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
 // ✅ Parse JSON for all non-webhook routes
 app.use(express.json());
