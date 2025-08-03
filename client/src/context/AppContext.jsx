@@ -20,46 +20,47 @@ export const AppContextProvider = (props) => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [userData, setUserData] = useState(null);
 
-  // ✅ Backend URL WITHOUT trailing slash
+  // ✅ No trailing slash
   const backendUrl = "https://lms-1-ki76.onrender.com";
 
-  // ================================
+  // ==============================
   // 1️⃣ Fetch All Courses
-  // ================================
+  // ==============================
   const fetchAllCourses = async () => {
-    
+    console.log("📡 Calling fetchAllCourses...");
     try {
       const res = await fetch(`${backendUrl}/api/course/all`, {
         method: "GET",
-        credentials: "include", // Required for Clerk sessions
+        credentials: "include", // ✅ required for Clerk session
         headers: { "Content-Type": "application/json" },
       });
+
+      console.log("📡 Response status:", res.status);
 
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
 
       const data = await res.json();
-      console.log(" All Courses from backend:", data);
+      console.log("✅ All Courses from backend:", data);
 
       if (data.success) {
         setAllCourses(data.courses);
       } else {
         toast.error(`Backend responded with error: ${data.message}`);
-        setAllCourses(dummyCourses);
+        setAllCourses(dummyCourses); // fallback
       }
     } catch (err) {
-      console.error("API Error:", err);
+      console.error("❌ API Error:", err);
       toast.error(`API Error: ${err.message}`);
       setAllCourses(dummyCourses);
     }
   };
 
-  // ================================
+  // ==============================
   // 2️⃣ Fetch User Data
-  // ================================
+  // ==============================
   const fetchUserData = async () => {
-    if (user?.publicMetadata?.role === "educator") {
-      setIsEducator(true);
-    }
+    if (user?.publicMetadata?.role === "educator") setIsEducator(true);
+
     try {
       const token = await getToken();
       const { data } = await axios.get(`${backendUrl}/api/user/data`, {
@@ -67,100 +68,73 @@ export const AppContextProvider = (props) => {
         withCredentials: true,
       });
 
-      if (data.success) {
-        setUserData(data.user);
-      } else {
-        toast.error(data.message);
-      }
+      if (data.success) setUserData(data.user);
+      else toast.error(data.message);
     } catch (error) {
-      console.error("Fetch user data error:", error);
+      console.error("❌ FetchUserData Error:", error.message);
     }
   };
 
-  // ================================
+  // ==============================
   // 3️⃣ Fetch User Enrolled Courses
-  // ================================
+  // ==============================
   const fetchUserEnrolledCourses = async () => {
     try {
       const token = await getToken();
-      const { data } = await axios.get(
-        `${backendUrl}/api/user/enrolled-courses`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`${backendUrl}/api/user/enrolled-courses`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
 
-      if (data.success) {
-        setEnrolledCourses(data.enrolledCourses.reverse());
-      } else {
-        toast.error(data.message);
-      }
+      if (data.success) setEnrolledCourses(data.enrolledCourses.reverse());
+      else toast.error(data.message);
     } catch (error) {
-      toast.error(error.message);
+      console.error("❌ EnrolledCourses Error:", error.message);
     }
   };
 
-  // ================================
-  // 4️⃣ Helper Functions
-  // ================================
-  const calculateRating = (course) => {
-    if (!course.courseRating || course.courseRating.length === 0) return 0;
+  // ==============================
+  // 4️⃣ Calculators
+  // ==============================
+  const calculateRating = (course) =>
+    course?.courseRating?.length
+      ? Math.floor(course.courseRating.reduce((sum, r) => sum + r.rating, 0) / course.courseRating.length)
+      : 0;
 
-    const total = course.courseRating.reduce(
-      (sum, r) => sum + r.rating,
-      0
+  const calculateChapterTime = (chapter) =>
+    humanizeDuration(
+      (chapter?.chapterContent?.reduce((t, l) => t + l.lectureDuration, 0) || 0) * 60 * 1000,
+      { units: ["h", "m"] }
     );
-    return Math.floor(total / course.courseRating.length);
-  };
 
-  const calculateChapterTime = (chapter) => {
-    const time = chapter.chapterContent.reduce(
-      (sum, lecture) => sum + lecture.lectureDuration,
-      0
+  const calculateCourseDuration = (course) =>
+    humanizeDuration(
+      (course?.courseContent?.reduce(
+        (total, c) => total + c.chapterContent.reduce((t, l) => t + l.lectureDuration, 0),
+        0
+      ) || 0) * 60 * 1000,
+      { units: ["h", "m"] }
     );
-    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
-  };
 
-  const calculateCourseDuration = (course) => {
-    let time = 0;
-    course.courseContent.forEach((chapter) =>
-      chapter.chapterContent.forEach(
-        (lecture) => (time += lecture.lectureDuration)
-      )
-    );
-    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
-  };
+  const calculateNoOfLecture = (course) =>
+    course?.courseContent?.reduce((total, c) => total + (c.chapterContent?.length || 0), 0) || 0;
 
-  const calculateNoOfLecture = (course) => {
-    if (!course || !course.courseContent) return 0;
-
-    return course.courseContent.reduce((count, chapter) => {
-      if (Array.isArray(chapter.chapterContent)) {
-        return count + chapter.chapterContent.length;
-      }
-      return count;
-    }, 0);
-  };
-
-  // ================================
-  // 5️⃣ useEffect Hooks
-  // ================================
+  // ==============================
+  // 5️⃣ Effects
+  // ==============================
   useEffect(() => {
-     console.log("⏳ useEffect triggered for fetchAllCourses");
+    console.log("⏳ useEffect triggered for fetchAllCourses");
     fetchAllCourses();
   }, []);
 
   useEffect(() => {
     if (user) {
+      console.log("⏳ Fetching user-related data...");
       fetchUserData();
       fetchUserEnrolledCourses();
     }
   }, [user]);
 
-  // ================================
-  // 6️⃣ Context Value
-  // ================================
   const value = {
     currency,
     allCourses,
@@ -180,7 +154,5 @@ export const AppContextProvider = (props) => {
     fetchAllCourses,
   };
 
-  return (
-    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;
 };
