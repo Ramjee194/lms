@@ -105,8 +105,8 @@ export const stripeWebhooks = async (req, res) => {
         const courseData = await Course.findById(purchaseData.courseId.toString());
 
         // Avoid duplicate pushes
-        if (!courseData.enrolledStudent.includes(userData._id)) {
-          courseData.enrolledStudent.push(userData._id);
+        if (!courseData.enrolledStudents.includes(userData._id)) {
+          courseData.enrolledStudents.push(userData._id);
         }
         if (!userData.enrolledCourses.includes(courseData._id)) {
           userData.enrolledCourses.push(courseData._id);

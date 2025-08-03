@@ -11,7 +11,7 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
   const currency = import.meta.env.VITE_CURRENCY;
   const navigate = useNavigate();
-  const backendUrl = import.meta.env.VITE_BACKEND_URL
+
 
   const { getToken } = useAuth();
   const { user } = useUser();
@@ -20,11 +20,12 @@ export const AppContextProvider = (props) => {
   const [isEducator, setIsEducator] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [userData, setUserData] = useState([null])
+  const backendUrl = "https://lms-1-ki76.onrender.com";
 
   // ✅ Fixed: Fetch All Courses with Vite proxy
   const fetchAllCourses = async () => {
     try {
-      const res = await fetch(`${backendUrl}/api/course/all`); // 🟢 Use proxy URL
+      const res = await fetch(`${backendUrl}/api/course/all`, {credentials: 'include'}); // 🟢 Use proxy URL
       const data = await res.json();
 
       console.log(" All Courses from backend:", data); // 🧪 Debug log

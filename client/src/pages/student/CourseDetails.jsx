@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {  data, useParams } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import Loading from '../../components/student/Loading';
 import { assets } from '../../assets/assets';
 import humanizeDuration from 'humanize-duration';
 import Footer from '../../components/student/StudentFooter';
 import YouTube from 'react-youtube';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -21,12 +23,24 @@ const CourseDetails = () => {
     calculateCourseDuration,
     calculateChapterTime,
     currency,
+    backendUrl,userData,getToekn
   } = useContext(AppContext);
 
   useEffect(() => {
-    const fetchCourseData = () => {
-      const findCourse = allCourses.find((course) => course._id === id);
-      setCourseData(findCourse);
+    const fetchCourseData = async() => {
+     try {
+      const {data} = await axios.get(backendUrl +'/api/course/'+id)
+
+      if(data.success){
+        setCourseData(data.courseData)
+      }else{
+        toast.error(data.message)
+      }
+      
+     } catch (error) {
+      toast.error(error.message)
+      
+     }
     };
 
     fetchCourseData();
@@ -38,6 +52,38 @@ const CourseDetails = () => {
       [index]: !prev[index],
     }));
   };
+
+  const enrollCourse = async () => {
+  try {
+    if (!userData) {
+      return toast.warn("Login to enroll");
+    }
+    if (isAlreadyEnrolled) {
+      return toast.warn("Already enrolled");
+    }
+
+    const token = await getToken(); // ✅ Fixed typo
+
+    const { data } = await axios.post(
+      `${backendUrl}/api/user/purchase`,
+      { courseId: courseData._id },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // ✅ Important for Clerk/CORS
+      }
+    );
+
+    if (data.success) {
+      const { session_url } = data;
+      window.location.replace(session_url);
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    console.error("Enroll error:", error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+};
 
   // Show loading state until courseData is available
   if (!courseData) {
@@ -195,7 +241,7 @@ const CourseDetails = () => {
                 <p>{calculateNoOfLecture(courseData)} lessons</p>
               </div>
             </div>
-            <button className="md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium">
+            <button onClick={enrollCourse} className="md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium">
               {isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}
             </button>
             <div className="pt-6">
@@ -210,6 +256,7 @@ const CourseDetails = () => {
             </div>
           </div>
         </div>
+        
       </div>
       <Footer />
     </>

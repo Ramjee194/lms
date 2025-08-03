@@ -1,35 +1,27 @@
-import { getAuth } from "@clerk/express";  // Clerk session to get current user ID
-import User from "../models/User.js";  // MongoDB User model
-import axios from "axios";  // To fetch data from Clerk API
+import { getAuth } from "@clerk/express";
+import User from "../models/User.js";
+import axios from "axios";
 
 export const syncUser = async (req, res) => {
   try {
-    const { userId, getToken } = getAuth(req);  // Get the logged-in userId
+    const { userId } = getAuth(req); // ✅ getAuth only returns userId and sessionId
 
-    console.log("Received userId from Clerk:", userId);  // Debug log
+    console.log("Received userId from Clerk:", userId);
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized - No user ID" });
     }
 
-    // Get the token from Clerk session
-    const token = await getToken();
-    console.log("Received token:", token);  // Debug log
-
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Unauthorized - No token" });
-    }
-
-    // Proceed with the Clerk API request
+    // ✅ Fetch from Clerk Backend API using Server Secret Key
     const clerkRes = await axios.get(`https://api.clerk.dev/v1/users/${userId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`, // ✅ Use backend key
       },
     });
 
     const data = clerkRes.data;
 
-    // Format and update the user in MongoDB
+    // ✅ Prepare user data for MongoDB
     const userData = {
       _id: data.id,
       email: data.email_addresses[0]?.email_address || "",
@@ -37,11 +29,16 @@ export const syncUser = async (req, res) => {
       imageUrl: data.image_url || "",
     };
 
+    // ✅ Upsert in MongoDB
     const user = await User.findByIdAndUpdate(data.id, userData, { upsert: true, new: true });
     return res.status(200).json({ success: true, user });
 
   } catch (error) {
-    console.error("syncUser error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    console.error("syncUser error:", error.response?.data || error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 };

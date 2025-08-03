@@ -10,33 +10,32 @@ const SyncUser = () => {
     const sync = async () => {
       try {
         const token = await getToken();
-        console.log("🪪 Clerk Token:", token);  // Debug: log the token
+        console.log("🪪 Clerk Token:", token); // Debug
 
         if (!token) {
           console.log("No token found, user may not be authenticated.");
-          return;  // If no token, exit early
+          return;
         }
 
-        // Send the token to the backend
-        const response = await axios.post("/api/sync-user", {}, {
+        // ✅ Correct API route used
+        const response = await axios.post("/api/user/sync-user", {}, {
           headers: {
-            Authorization: `Bearer ${token}`,  // Attach the token in the Authorization header
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log("Sync successful:", response.data);  // Log the response
-
+        console.log("✅ Sync successful:", response.data);
       } catch (error) {
-        console.log("Sync failed:", error.message);  // Debug: catch any errors
+        console.log("❌ Sync failed:", error.message);
       }
     };
 
     if (user) {
-      sync();  // Trigger sync if the user is available
+      sync();
     }
   }, [user, getToken]);
 
-  return null;  // No UI to render
+  return null;
 };
 
 export default SyncUser;
