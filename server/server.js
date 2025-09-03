@@ -8,6 +8,9 @@ import { clerkMiddleware } from '@clerk/express';
 import connectCloudinary from './configs/cloudinary.js';
 import courseRouter from './routes/courseRoutes.js';
 import { clerkWebhookHandler, stripeWebhooks } from './controllers/clerkWebhook.js';
+import Course from './models/Course.js';
+import { dummyCourses } from '../server/assets.js';
+
 
 dotenv.config();
 const app = express();
@@ -48,6 +51,17 @@ app.get('/', (req, res) => {
 app.use('/api/user', userRouter);
 app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
+
+// 🔹 Seed route (sirf ek baar chalana hai)
+app.get("/seed/courses", async (req, res) => {
+  try {
+    await Course.deleteMany(); // purane hata de
+    await Course.insertMany(dummyCourses); // naye insert kare
+    res.json({ message: " all Dummy courses inserted successfully 🚀" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // --------------------
 // 6️⃣ Start Server

@@ -20,9 +20,8 @@ const formatUserData = (data) => ({
 
 export const clerkWebhookHandler = async (req, res) => {
   const secret = process.env.CLERK_WEBHOOK_SECRET;
-  const payload = req.body; // This is a Buffer
+  const payload = req.body;
   const headers = req.headers;
-  
 
   try {
     const wh = new Webhook(secret);
@@ -30,23 +29,30 @@ export const clerkWebhookHandler = async (req, res) => {
       'svix-id': headers['svix-id'],
       'svix-timestamp': headers['svix-timestamp'],
       'svix-signature': headers['svix-signature'],
-    })
-    console.log('🔔 Clerk webhook hit received');
+    });
 
+    console.log('🔔 Clerk webhook hit received');
 
     const { data, type } = evt;
 
     switch (type) {
       case 'user.created': {
         const userData = formatUserData(data);
-        await User.create(userData);
-        console.log('✅ User created via webhook:', userData);
+
+        // ✅ Agar user exist nahi hai to create karo
+        const existingUser = await User.findById(data.id);
+        if (!existingUser) {
+          await User.create(userData);
+          console.log('✅ User created via webhook:', userData);
+        } else {
+          console.log('ℹ️ User already exists, skipping creation');
+        }
         break;
       }
 
       case 'user.updated': {
         const userData = formatUserData(data);
-        await User.findByIdAndUpdate(data.id, userData, { new: true });
+        await User.findByIdAndUpdate(data.id, userData, { new: true, upsert: true });
         console.log('🔄 User updated via webhook:', userData);
         break;
       }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { AppContext } from '../../context/AppContext';
 import CourseCard from './CourseCard';
 
+
 const CourseSection = () => {
   const { allCourses } = useContext(AppContext);
 

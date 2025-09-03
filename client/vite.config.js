@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
    
-      
+       '/api': 'https://lms-1-ki76.onrender.com',
     },
   }
   
