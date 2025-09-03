@@ -8,9 +8,10 @@ import { clerkMiddleware } from '@clerk/express';
 import connectCloudinary from './configs/cloudinary.js';
 import courseRouter from './routes/courseRoutes.js';
 import { clerkWebhookHandler, stripeWebhooks } from './controllers/clerkWebhook.js';
-import Course from './models/Course.js';
-import { dummyCourses } from '../server/assets.js';
 
+// 🔹 Naye imports for seeding
+import Course from './models/Course.js';
+import { dummyCourses } from './assets.js';
 
 dotenv.config();
 const app = express();
@@ -42,6 +43,25 @@ await connectDB();
 await connectCloudinary();
 
 // --------------------
+// 🔹 Seed Dummy Courses
+// --------------------
+const seedCourses = async () => {
+  try {
+    const cleanedCourses = dummyCourses.map(c => ({
+      ...c,
+      enrolledStudents: [] // empty array to avoid ObjectId cast error
+    }));
+
+    await Course.insertMany(cleanedCourses);
+    console.log("✅ Dummy courses inserted successfully");
+  } catch (err) {
+    console.error("❌ Error inserting dummy courses:", err);
+  }
+};
+
+seedCourses();
+
+// --------------------
 // 5️ Routes
 // --------------------
 app.get('/', (req, res) => {
@@ -51,31 +71,6 @@ app.get('/', (req, res) => {
 app.use('/api/user', userRouter);
 app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
-
-// 🔹 Seed route (sirf ek baar chalana hai)
-// 🔹 Seed route (sirf ek baar chalana hai)
-app.get("/seed/courses", async (req, res) => {
-  try {
-    console.log("Dummy Courses Count:", dummyCourses.length);
-
-    // Purane course delete
-    await Course.deleteMany();
-
-    // Insert new courses
-    const inserted = await Course.insertMany(dummyCourses);
-
-    res.json({ 
-      success: true, 
-      count: inserted.length, 
-      message: "All dummy courses inserted successfully 🚀" 
-    });
-  } catch (err) {
-    console.error("Seeding error:", err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-
 
 // --------------------
 // 6️Start Server

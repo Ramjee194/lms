@@ -89,7 +89,6 @@ const CourseDetails = () => {
   // ✅ Enroll Course
  const enrollCourse = async () => {
   try {
-    
     if (!userData) return toast.warn("Login to enroll");
     if (!courseData || !courseData._id) return toast.error("Course data not found");
     if (isAlreadyEnrolled) return toast.warn("Already enrolled");

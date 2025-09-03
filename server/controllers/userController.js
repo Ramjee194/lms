@@ -40,23 +40,33 @@ export const userEnrolledCourses = async (req, res) => {
 
 export const purchaseCourse = async (req, res) => {
   try {
-   
     const { courseId } = req.body;
-    const { origin } = req.headers;
     const userId = req.auth?.userId;
-
-    
 
     const userData = await User.findById(userId);
     const courseData = await Course.findById(courseId);
 
- 
-
     if (!userData || !courseData) {
-      console.log(" ERROR: userData and userData in body");
+      console.log(" ERROR: userData or courseData not found");
       return res.json({ success: false, message: 'Data not found' });
     }
 
+    // ------------------------------
+    // 1️⃣ Enroll user if not already enrolled
+    // ------------------------------
+    if (!userData.enrolledCourses.includes(courseId)) {
+      userData.enrolledCourses.push(courseId);
+      await userData.save();
+    }
+
+    if (!courseData.enrolledStudents.includes(userId)) {
+      courseData.enrolledStudents.push(userId);
+      await courseData.save();
+    }
+
+    // ------------------------------
+    // 2️⃣ Calculate price & create Purchase
+    // ------------------------------
     const amount = Math.round(
       (courseData.coursePrice - (courseData.discount * courseData.coursePrice) / 100) * 100
     ); // in cents
@@ -64,17 +74,16 @@ export const purchaseCourse = async (req, res) => {
     const newPurchase = await Purchase.create({
       courseId: courseData._id,
       userId,
-      amount: amount / 100, // store in dollars
+      amount: amount / 100,
       isPaid: false, // initially unpaid
     });
 
     res.json({ success: true, newPurchase });
   } catch (err) {
-    console.error(" Purchase error:", err);
+    console.error("Purchase error:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
 
 
 
