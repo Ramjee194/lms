@@ -40,45 +40,37 @@ export const userEnrolledCourses = async (req, res) => {
 
 export const purchaseCourse = async (req, res) => {
   try {
+   
     const { courseId } = req.body;
-    const userId = req.auth?.userId; // middleware se aayega
+    const { origin } = req.headers;
+    const userId = req.auth?.userId;
+
+    
 
     const userData = await User.findById(userId);
     const courseData = await Course.findById(courseId);
 
-    if (!userData || !courseData) {
-      console.log("ERROR: userData or courseData not found");
-      return res.json({ success: false, message: 'Data not found' });
-    }
+ 
 
-    // Already enrolled check
-    if (courseData.enrolledStudents.some(id => id.toString() === userData._id.toString())) {
-      return res.json({ success: false, message: "Already enrolled" });
+    if (!userData || !courseData) {
+      console.log(" ERROR: userData and userData in body");
+      return res.json({ success: false, message: 'Data not found' });
     }
 
     const amount = Math.round(
       (courseData.coursePrice - (courseData.discount * courseData.coursePrice) / 100) * 100
-    );
+    ); // in cents
 
-    // Create purchase record
     const newPurchase = await Purchase.create({
       courseId: courseData._id,
       userId,
-      amount: amount / 100,
-      isPaid: true, // assume payment done
+      amount: amount / 100, // store in dollars
+      isPaid: false, // initially unpaid
     });
 
-    // Update enrolledStudents
-    courseData.enrolledStudents.push(userData._id);
-    await courseData.save();
-
-    res.json({
-      success: true,
-      courseId: courseData._id.toString(),
-      purchaseId: newPurchase._id.toString(),
-    });
+    res.json({ success: true, newPurchase });
   } catch (err) {
-    console.error("Purchase error:", err);
+    console.error(" Purchase error:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
