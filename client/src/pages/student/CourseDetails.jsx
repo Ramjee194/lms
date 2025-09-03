@@ -35,6 +35,8 @@ const CourseDetails = () => {
     const fetchCourseData = async () => {
       setLoading(true);
       try {
+         console.log("Available dummy courses:", dummyCourses);
+    console.log("Searching for course ID:", id);
         const { data } = await axios.get(`${backendUrl}/api/course/${id}`);
         console.log("Course API Response:", data);
 
@@ -87,6 +89,7 @@ const CourseDetails = () => {
   // ✅ Enroll Course
  const enrollCourse = async () => {
   try {
+    
     if (!userData) return toast.warn("Login to enroll");
     if (!courseData || !courseData._id) return toast.error("Course data not found");
     if (isAlreadyEnrolled) return toast.warn("Already enrolled");
@@ -99,7 +102,7 @@ const CourseDetails = () => {
     });
 
     const { data } = await axios.post(
-      `${backendUrl}/api/course/purchase`,
+      `${backendUrl}/api/user/purchase`,
       { courseId: courseData._id },
       { 
         headers: { 

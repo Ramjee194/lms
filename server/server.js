@@ -16,13 +16,13 @@ dotenv.config();
 const app = express();
 
 // --------------------
-// 1️⃣ Webhooks first (raw body)
+// 1️ Webhooks first (raw body)
 // --------------------
 app.post('/clerk', express.raw({ type: 'application/json' }), clerkWebhookHandler);
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 // --------------------
-// 2️⃣ CORS (single, correct config)
+// 2️ CORS (single, correct config)
 // --------------------
 app.use(cors({
   origin: ["http://localhost:5173"], // add prod URL here
@@ -30,19 +30,19 @@ app.use(cors({
 }));
 
 // --------------------
-// 3️⃣ Other middleware
+// 3️ Other middleware
 // --------------------
 app.use(express.json());       // normal JSON parser
 app.use(clerkMiddleware());    // Clerk auth middleware
 
 // --------------------
-// 4️⃣ Connect DB + Cloudinary
+// 4️Connect DB + Cloudinary
 // --------------------
 await connectDB();
 await connectCloudinary();
 
 // --------------------
-// 5️⃣ Routes
+// 5️ Routes
 // --------------------
 app.get('/', (req, res) => {
   res.send('LMS API is running...');
@@ -53,18 +53,32 @@ app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
 
 // 🔹 Seed route (sirf ek baar chalana hai)
+// 🔹 Seed route (sirf ek baar chalana hai)
 app.get("/seed/courses", async (req, res) => {
   try {
-    await Course.deleteMany(); // purane hata de
-    await Course.insertMany(dummyCourses); // naye insert kare
-    res.json({ message: " all Dummy courses inserted successfully 🚀" });
+    console.log("Dummy Courses Count:", dummyCourses.length);
+
+    // Purane course delete
+    await Course.deleteMany();
+
+    // Insert new courses
+    const inserted = await Course.insertMany(dummyCourses);
+
+    res.json({ 
+      success: true, 
+      count: inserted.length, 
+      message: "All dummy courses inserted successfully 🚀" 
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Seeding error:", err);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
+
+
 // --------------------
-// 6️⃣ Start Server
+// 6️Start Server
 // --------------------
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
