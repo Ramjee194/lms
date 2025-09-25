@@ -10,12 +10,12 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'https://lms-1-ki76.onrender.com',
+      '/api': 'https://lms-1-ki76.onrender.com', // backend API
     },
   },
   preview: {
     host: "0.0.0.0",
     port: process.env.PORT || 5173,
-    allowedHosts: ["onelms-uode.onrender.com"], // add your Render domain
+    allowedHosts: ["onelms-uode.onrender.com"], // 👈 Render domain allowed
   },
 })
