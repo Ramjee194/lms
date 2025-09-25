@@ -13,7 +13,7 @@ export const getCourseId = async (req, res) => {
     const course = await Course.findById(id);
 
     if (!course) {
-      // ✅ Fallback to dummyCourses
+      //  Fallback to dummyCourses
       const dummyCourse = dummyCourses.find((c) => c._id === id);
       if (!dummyCourse) {
         return res.json({ success: false, message: "Course not found" });
@@ -21,7 +21,7 @@ export const getCourseId = async (req, res) => {
       return res.json({ success: true, course: dummyCourse });
     }
 
-    // ✅ Ensure courseContent is an array
+    //  Ensure courseContent is an array
     if (!course.courseContent) {
       course.courseContent = [];
     }

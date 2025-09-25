@@ -31,7 +31,7 @@ export const clerkWebhookHandler = async (req, res) => {
       'svix-signature': headers['svix-signature'],
     });
 
-    console.log('🔔 Clerk webhook hit received');
+    console.log(' Clerk webhook hit received');
 
     const { data, type } = evt;
 
@@ -39,13 +39,13 @@ export const clerkWebhookHandler = async (req, res) => {
       case 'user.created': {
         const userData = formatUserData(data);
 
-        // ✅ Agar user exist nahi hai to create karo
+        //  Agar user exist nahi hai to create karo
         const existingUser = await User.findById(data.id);
         if (!existingUser) {
           await User.create(userData);
-          console.log('✅ User created via webhook:', userData);
+          console.log(' User created via webhook:', userData);
         } else {
-          console.log('ℹ️ User already exists, skipping creation');
+          console.log('ℹUser already exists, skipping creation');
         }
         break;
       }
@@ -53,23 +53,23 @@ export const clerkWebhookHandler = async (req, res) => {
       case 'user.updated': {
         const userData = formatUserData(data);
         await User.findByIdAndUpdate(data.id, userData, { new: true, upsert: true });
-        console.log('🔄 User updated via webhook:', userData);
+        console.log(' User updated via webhook:', userData);
         break;
       }
 
       case 'user.deleted': {
         await User.findByIdAndDelete(data.id);
-        console.log('❌ User deleted via webhook:', data.id);
+        console.log(' User deleted via webhook:', data.id);
         break;
       }
 
       default:
-        console.log('ℹ️ Unhandled webhook type:', type);
+        console.log('ℹUnhandled webhook type:', type);
     }
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('❌ Webhook Error:', err.message);
+    console.error(' Webhook Error:', err.message);
     return res.status(400).json({ error: 'Invalid webhook' });
   }
 };
@@ -89,11 +89,11 @@ export const stripeWebhooks = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
-    console.error('❌ Signature verification failed:', err.message);
+    console.error(' Signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // ✅ Signature verified, handle event
+  // Signature verified, handle event
   try {
     switch (event.type) {
       case 'payment_intent.succeeded': {
@@ -124,7 +124,7 @@ export const stripeWebhooks = async (req, res) => {
         purchaseData.status = 'completed';
         await purchaseData.save();
 
-        console.log('✅ PaymentIntent succeeded:', paymentIntentId);
+        console.log(' PaymentIntent succeeded:', paymentIntentId);
         break;
       }
 
@@ -141,17 +141,17 @@ export const stripeWebhooks = async (req, res) => {
         purchaseData.status = 'failed';
         await purchaseData.save();
 
-        console.log('❌ Payment failed:', paymentIntentId);
+        console.log(' Payment failed:', paymentIntentId);
         break;
       }
 
       default:
-        console.log(`ℹ️ Unhandled event type: ${event.type}`);
+        console.log(`ℹ Unhandled event type: ${event.type}`);
     }
 
     res.status(200).json({ received: true });
   } catch (err) {
-    console.error('🔥 Error handling webhook event:', err.message);
+    console.error(' Error handling webhook event:', err.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

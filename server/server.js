@@ -47,20 +47,23 @@ await connectCloudinary();
 // --------------------
 const seedCourses = async () => {
   try {
-    const cleanedCourses = dummyCourses.map(c => ({
-      ...c,
-      enrolledStudents: [] // empty array to avoid ObjectId cast error
-    }));
+    const cleanedCourses = dummyCourses.map(c => {
+      // Remove _id if exists
+      const { _id, ...rest } = c;
+      return {
+        ...rest,
+        enrolledStudents: [] // empty array to avoid ObjectId cast error
+      };
+    });
 
     await Course.insertMany(cleanedCourses);
-    console.log("✅ Dummy courses inserted successfully");
+    console.log("Dummy courses inserted successfully");
   } catch (err) {
-    console.error("❌ Error inserting dummy courses:", err);
+    console.error(" Error inserting dummy courses:", err);
   }
 };
 
 seedCourses();
-
 // --------------------
 // 5️ Routes
 // --------------------
